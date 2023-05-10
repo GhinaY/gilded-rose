@@ -25,45 +25,46 @@ export class GildedRose {
         item.quality = Math.max(0, item.quality - amount);
     };
 
+    getSellInDependantQualityChangeAmount(item) {
+        if (item.sellIn < 0) return 2;
+        return 1;
+    }
+
     updateQuality() {
         this.items = this.items.map(item => {
             if (item.name === 'Sulfuras, Hand of Ragnaros') {
                 return item;
             };
 
+            item.sellIn -= 1;
+
             switch (item.name) {
-                case 'Aged Brie':
-                    this.increaseQualityWithLimit(item);
-                    break;
                 case 'Backstage passes to a TAFKAL80ETC concert':
-                    this.increaseQualityWithLimit(item);
-                        
-                    if (item.sellIn < 11) {
-                        this.increaseQualityWithLimit(item);
-                    }
-                    if (item.sellIn < 6) {
-                        this.increaseQualityWithLimit(item);
-                    }
+                    if (item.sellIn < 0) {
+                        item.quality = 0;
+                    } else {
+                        let changeAmount;
+
+                        if (item.sellIn < 5) {
+                            changeAmount = 3;
+                        } else if (item.sellIn < 10) {
+                            changeAmount = 2;
+                        } else {
+                            changeAmount = 1;
+                        }
+
+                        this.increaseQualityWithLimit(item, changeAmount);
+                    };
+                    
+                    break;
+                case 'Aged Brie':
+                    var changeAmount = this.getSellInDependantQualityChangeAmount(item);
+                    this.increaseQualityWithLimit(item, changeAmount);
                     break;
                 default:
-                    this.decreaseQualityWithLimit(item);
-            }
-            
-            item.sellIn = item.sellIn - 1;
-            
-            // TODO This should be combined into the above switch statement in a followup refactor
-            if (item.sellIn < 0) {
-                switch (item.name) {
-                    case 'Aged Brie':
-                        this.increaseQualityWithLimit(item);
-                        break;
-                    case 'Backstage passes to a TAFKAL80ETC concert':
-                        item.quality = 0;
-                        break;
-                    default:
-                        this.decreaseQualityWithLimit(item);
-                }
-            }
+                    var changeAmount = this.getSellInDependantQualityChangeAmount(item);
+                    this.decreaseQualityWithLimit(item, changeAmount);
+            };
 
             return item;
         });

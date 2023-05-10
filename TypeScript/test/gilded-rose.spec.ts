@@ -115,6 +115,35 @@ describe('Gilded Rose', function () {
                 expect(gildedRose.items[0].quality).to.equal(0);
             });
         });
+
+        describe("getSellInDependantQualityChangeAmount", function () {
+            it("returns 2 if the item sellIn is less than 0", function() {
+                const testItem = new Item("test", -1, 10);
+                const gildedRose = new GildedRose([testItem]);
+                
+                const changeAmount = gildedRose.getSellInDependantQualityChangeAmount(testItem)
+
+                expect(changeAmount).to.equal(2);
+            });
+
+            it("returns 1 if the item sellIn is 0", function() {
+                const testItem = new Item("test", 0, 10);
+                const gildedRose = new GildedRose([testItem]);
+                
+                const changeAmount = gildedRose.getSellInDependantQualityChangeAmount(testItem)
+
+                expect(changeAmount).to.equal(1);
+            });
+
+            it("returns 1 if the item sellIn is more than 0", function() {
+                const testItem = new Item("test", 1, 10);
+                const gildedRose = new GildedRose([testItem]);
+                
+                const changeAmount = gildedRose.getSellInDependantQualityChangeAmount(testItem)
+
+                expect(changeAmount).to.equal(1);
+            });
+        });
     });
     
     describe("updateQuality function", function () {
