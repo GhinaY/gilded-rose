@@ -17,58 +17,51 @@ export class GildedRose {
         this.items = items;
     }
 
+    increaseQualityWithLimit(item, amount = 1) {
+        item.quality = Math.min(50, item.quality + amount);
+    };
+
+    decreaseQualityWithLimit(item, amount = 1) {
+        item.quality = Math.max(0, item.quality - amount);
+    };
+
     updateQuality() {
         this.items = this.items.map(item => {
+            if (item.name === 'Sulfuras, Hand of Ragnaros') {
+                return item;
+            };
+
             switch (item.name) {
                 case 'Aged Brie':
-                    if (item.quality < 50) {
-                        item.quality = item.quality + 1
-                    }
+                    this.increaseQualityWithLimit(item);
                     break;
                 case 'Backstage passes to a TAFKAL80ETC concert':
-                    if (item.quality < 50) {
-                        item.quality = item.quality + 1
-                        if (item.sellIn < 11) {
-                            if (item.quality < 50) {
-                                item.quality = item.quality + 1
-                            }
-                        }
-                        if (item.sellIn < 6) {
-                            if (item.quality < 50) {
-                                item.quality = item.quality + 1
-                            }
-                        }
+                    this.increaseQualityWithLimit(item);
+                        
+                    if (item.sellIn < 11) {
+                        this.increaseQualityWithLimit(item);
                     }
-                    break;
-                case 'Sulfuras, Hand of Ragnaros':
+                    if (item.sellIn < 6) {
+                        this.increaseQualityWithLimit(item);
+                    }
                     break;
                 default:
-                    if (item.quality > 0) {
-                        item.quality = item.quality - 1
-                    }
+                    this.decreaseQualityWithLimit(item);
             }
             
-            if (item.name != 'Sulfuras, Hand of Ragnaros') {
-                item.sellIn = item.sellIn - 1;
-            };
+            item.sellIn = item.sellIn - 1;
             
             // TODO This should be combined into the above switch statement in a followup refactor
             if (item.sellIn < 0) {
                 switch (item.name) {
                     case 'Aged Brie':
-                        if (item.quality < 50) {
-                            item.quality = item.quality + 1
-                        }
+                        this.increaseQualityWithLimit(item);
                         break;
                     case 'Backstage passes to a TAFKAL80ETC concert':
-                        item.quality = item.quality - item.quality
-                        break;
-                    case 'Sulfuras, Hand of Ragnaros':
+                        item.quality = 0;
                         break;
                     default:
-                        if (item.quality > 0) {
-                            item.quality = item.quality - 1
-                        }
+                        this.decreaseQualityWithLimit(item);
                 }
             }
 

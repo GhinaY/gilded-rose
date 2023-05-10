@@ -2,7 +2,7 @@ import { expect } from 'chai';
 import { Item, GildedRose } from '../app/gilded-rose';
 
 describe('Gilded Rose', function () {
-    describe("constructor function", function () {
+    describe("Constructor function", function () {
         it("sets the items property correctly if an argument list is provided", function() {
             const testItems = [ new Item("test", 1, 1) ];
             const gildedRose = new GildedRose(testItems);
@@ -17,6 +17,106 @@ describe('Gilded Rose', function () {
         });
     });
 
+    describe("Helper functions", function () {
+        describe("increaseQualityWithLimit", function () {
+            describe("amount argument", function () {
+                it("uses amount argument it is provided", function() {
+                    const testItem = new Item("test", 1, 10);
+                    const gildedRose = new GildedRose([testItem]);
+                    
+                    gildedRose.increaseQualityWithLimit(testItem, 5)
+
+                    expect(gildedRose.items[0].quality).to.equal(15);
+                });
+
+                it("uses 1 as the default amount if an argument isn't provided", function() {
+                    const testItem = new Item("test", 1, 10);
+                    const gildedRose = new GildedRose([testItem]);
+                    
+                    gildedRose.increaseQualityWithLimit(testItem)
+
+                    expect(gildedRose.items[0].quality).to.equal(11);
+                });
+            });
+            
+            it("increases the quality by the amount if it won't not exceed 50", function() {
+                const testItem = new Item("test", 1, 10);
+                const gildedRose = new GildedRose([testItem]);
+                
+                gildedRose.increaseQualityWithLimit(testItem, 2)
+
+                expect(gildedRose.items[0].quality).to.equal(12);
+            });
+
+            it("partially increases the amount if needed without exceeding 50", function() {
+                const testItem = new Item("test", 1, 49);
+                const gildedRose = new GildedRose([testItem]);
+                
+                gildedRose.increaseQualityWithLimit(testItem, 2)
+
+                expect(gildedRose.items[0].quality).to.equal(50);
+            });
+
+            it("does not increase the quality if it would exceed 50", function() {
+                const testItem = new Item("test", 1, 50);
+                const gildedRose = new GildedRose([testItem]);
+                
+                gildedRose.increaseQualityWithLimit(testItem, 1)
+
+                expect(gildedRose.items[0].quality).to.equal(50);
+            });
+        });
+
+        describe("decreaseQualityWithLimit", function () {
+            describe("amount argument", function () {
+                it("uses amount argument it is provided", function() {
+                    const testItem = new Item("test", 1, 10);
+                    const gildedRose = new GildedRose([testItem]);
+                    
+                    gildedRose.decreaseQualityWithLimit(testItem, 5)
+
+                    expect(gildedRose.items[0].quality).to.equal(5);
+                });
+
+                it("uses 1 as the default amount if an argument isn't provided", function() {
+                    const testItem = new Item("test", 1, 10);
+                    const gildedRose = new GildedRose([testItem]);
+                    
+                    gildedRose.decreaseQualityWithLimit(testItem)
+
+                    expect(gildedRose.items[0].quality).to.equal(9);
+                });
+            });
+            
+            it("decreases the quality by the amount if it won't go below 0", function() {
+                const testItem = new Item("test", 1, 10);
+                const gildedRose = new GildedRose([testItem]);
+                
+                gildedRose.decreaseQualityWithLimit(testItem, 2)
+
+                expect(gildedRose.items[0].quality).to.equal(8);
+            });
+
+            it("partially decreases the amount if needed without going below 0", function() {
+                const testItem = new Item("test", 1, 1);
+                const gildedRose = new GildedRose([testItem]);
+                
+                gildedRose.decreaseQualityWithLimit(testItem, 2)
+
+                expect(gildedRose.items[0].quality).to.equal(0);
+            });
+
+            it("does not decrease the quality if it would go below 0", function() {
+                const testItem = new Item("test", 1, 0);
+                const gildedRose = new GildedRose([testItem]);
+                
+                gildedRose.decreaseQualityWithLimit(testItem, 1)
+
+                expect(gildedRose.items[0].quality).to.equal(0);
+            });
+        });
+    });
+    
     describe("updateQuality function", function () {
         let itemName: string;
         let itemSellIn: number;
@@ -63,18 +163,11 @@ describe('Gilded Rose', function () {
                         itemSellIn = 1;
                     });
 
-                    it("should decrease the quality by 1 if it is 1 or more", function() {
+                    it("should decrease the quality by 1", function() {
                         itemQuality = 10;
                         const items = getItems();
 
                         expect(items[0].quality).to.equal(9);
-                    });
-                    
-                    it("should not decrease the quality below 0", function() {
-                        itemQuality = 0;
-                        const items = getItems();
-
-                        expect(items[0].quality).to.equal(0);
                     });
                 });
 
@@ -83,25 +176,11 @@ describe('Gilded Rose', function () {
                         itemSellIn = 0; // this will be updated within the function to -1
                     });
 
-                    it("should decrease the quality by 2 if it is 2 or more", function() {
+                    it("should decrease the quality by 2", function() {
                         itemQuality = 10;
                         const items = getItems();
 
                         expect(items[0].quality).to.equal(8);
-                    });
-
-                    it("should decrease the quality by 1 if it is 1", function() {
-                        itemQuality = 1;
-                        const items = getItems();
-
-                        expect(items[0].quality).to.equal(0);
-                    });
-
-                    it("should not decrease the quality below 0", function() {
-                        itemQuality = 0;
-                        const items = getItems();
-
-                        expect(items[0].quality).to.equal(0);
                     });
                 });
             });
@@ -110,23 +189,14 @@ describe('Gilded Rose', function () {
                 describe("Legendary item", function () {
                     beforeEach(function() {
                         itemName = "Sulfuras, Hand of Ragnaros";
-                        itemQuality = 50;
-                    });
-
-                    it("should not change the quality value when sellIn value is 0 or more", function() {
+                        itemQuality = 10;
                         itemSellIn = 10;
-
-                        const items = getItems();
-
-                        expect(items[0].quality).to.equal(50);
                     });
 
-                    it("should not change the quality value when sellIn value is negative", function() {
-                        itemSellIn = -1; // this will be updated within the function to -1
-
+                    it("should not change the quality", function() {
                         const items = getItems();
 
-                        expect(items[0].quality).to.equal(50);
+                        expect(items[0].quality).to.equal(10);
                     });
                 });
 
@@ -140,18 +210,11 @@ describe('Gilded Rose', function () {
                             itemSellIn = 1;
                         });
 
-                        it("should increase the quality by 1 if it is 49 or less", function() {
+                        it("should increase the quality by 1", function() {
                             itemQuality = 0;
                             const items = getItems();
 
                             expect(items[0].quality).to.equal(1);
-                        });
-
-                        it("should not increase the quality above 50", function() {
-                            itemQuality = 50;
-                            const items = getItems();
-
-                            expect(items[0].quality).to.equal(50);
                         });
                     });
 
@@ -160,25 +223,11 @@ describe('Gilded Rose', function () {
                             itemSellIn = 0; // this will be updated within the function to -1
                         });
 
-                        it("should increase the quality by 2 if it is 48 or less", function() {
+                        it("should increase the quality by 2", function() {
                             itemQuality = 0;
                             const items = getItems();
 
                             expect(items[0].quality).to.equal(2);
-                        });
-
-                        it("should increase the quality by 1 if it is 49", function() {
-                            itemQuality = 49;
-                            const items = getItems();
-
-                            expect(items[0].quality).to.equal(50);
-                        });
-
-                        it("should not increase the quality above 50", function() {
-                            itemQuality = 50;
-                            const items = getItems();
-
-                            expect(items[0].quality).to.equal(50);
                         });
                     });
                 });
@@ -206,32 +255,11 @@ describe('Gilded Rose', function () {
                             itemSellIn = 5;
                         });
 
-                        it("should increase the quality by 3 if it is 47 or less", function() {
+                        it("should increase the quality by 3", function() {
                             itemQuality = 0;
                             const items = getItems();
 
                             expect(items[0].quality).to.equal(3);
-                        });
-
-                        it("should increase the quality by 2 if it is 48", function() {
-                            itemQuality = 48;
-                            const items = getItems();
-
-                            expect(items[0].quality).to.equal(50);
-                        });
-
-                        it("should increase the quality by 1 if it is 49", function() {
-                            itemQuality = 49;
-                            const items = getItems();
-
-                            expect(items[0].quality).to.equal(50);
-                        });
-
-                        it("should not increase the quality above 50", function() {
-                            itemQuality = 50;
-                            const items = getItems();
-
-                            expect(items[0].quality).to.equal(50);
                         });
                     });
 
@@ -240,25 +268,11 @@ describe('Gilded Rose', function () {
                             itemSellIn = 10;
                         });
 
-                        it("should increase the quality by 2 if it is 48 or less", function() {
+                        it("should increase the quality by 2", function() {
                             itemQuality = 0;
                             const items = getItems();
 
                             expect(items[0].quality).to.equal(2);
-                        });
-
-                        it("should increase the quality by 1 if it is 49", function() {
-                            itemQuality = 49;
-                            const items = getItems();
-
-                            expect(items[0].quality).to.equal(50);
-                        });
-
-                        it("should not increase the quality above 50", function() {
-                            itemQuality = 50;
-                            const items = getItems();
-
-                            expect(items[0].quality).to.equal(50);
                         });
                     });
 
@@ -267,18 +281,11 @@ describe('Gilded Rose', function () {
                             itemSellIn = 50;
                         });
 
-                        it("should increase the quality by 1 if it is 49 or less", function() {
+                        it("should increase the quality by 1", function() {
                             itemQuality = 0;
                             const items = getItems();
 
                             expect(items[0].quality).to.equal(1);
-                        });
-
-                        it("should not increase the quality above 50", function() {
-                            itemQuality = 50;
-                            const items = getItems();
-
-                            expect(items[0].quality).to.equal(50);
                         });
                     });
                 });
