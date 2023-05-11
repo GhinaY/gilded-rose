@@ -100,33 +100,70 @@ describe('Gilded Rose', function () {
                 });
             });
 
-            it("decreases the quality by the amount argument if it won't go below 0", function() {
-                const testItem = new Item(itemName, itemSellIn, itemQuality);
-                const gildedRose = new GildedRose([testItem]);
-                
-                gildedRose.decreaseQualityWithLimit(testItem, 2)
+            describe("Standard item", function () {
+                it("decreases the quality by the amount argument if it won't go below 0", function() {
+                    const testItem = new Item(itemName, itemSellIn, itemQuality);
+                    const gildedRose = new GildedRose([testItem]);
+                    
+                    gildedRose.decreaseQualityWithLimit(testItem, 2)
 
-                expect(gildedRose.items[0].quality).to.equal(itemQuality - 2);
+                    expect(gildedRose.items[0].quality).to.equal(itemQuality - 2);
+                });
+
+                it("partially decreases the amount if needed without going below 0", function() {
+                    itemQuality = 1;
+                    const testItem = new Item(itemName, itemSellIn, itemQuality);
+                    const gildedRose = new GildedRose([testItem]);
+                    
+                    gildedRose.decreaseQualityWithLimit(testItem, 2)
+
+                    expect(gildedRose.items[0].quality).to.equal(0);
+                });
+
+                it("does not decrease the quality if it would go below 0", function() {
+                    itemQuality = 0;
+                    const testItem = new Item(itemName, itemSellIn, itemQuality);
+                    const gildedRose = new GildedRose([testItem]);
+                    
+                    gildedRose.decreaseQualityWithLimit(testItem, 1)
+
+                    expect(gildedRose.items[0].quality).to.equal(0);
+                });
             });
 
-            it("partially decreases the amount if needed without going below 0", function() {
-                itemQuality = 1;
-                const testItem = new Item(itemName, itemSellIn, itemQuality);
-                const gildedRose = new GildedRose([testItem]);
-                
-                gildedRose.decreaseQualityWithLimit(testItem, 2)
+            describe("Conjured item", function () {
+                beforeEach(function() {
+                    itemName = "Conjured item";
+                });
 
-                expect(gildedRose.items[0].quality).to.equal(0);
-            });
+                it("decreases the quality by double the amount argument if it won't go below 0", function() {
+                    const testItem = new Item(itemName, itemSellIn, itemQuality);
+                    const gildedRose = new GildedRose([testItem]);
+                    
+                    gildedRose.decreaseQualityWithLimit(testItem, 2)
 
-            it("does not decrease the quality if it would go below 0", function() {
-                itemQuality = 0;
-                const testItem = new Item(itemName, itemSellIn, itemQuality);
-                const gildedRose = new GildedRose([testItem]);
-                
-                gildedRose.decreaseQualityWithLimit(testItem, 1)
+                    expect(gildedRose.items[0].quality).to.equal(itemQuality - 4);
+                });
 
-                expect(gildedRose.items[0].quality).to.equal(0);
+                it("partially decreases by double the amount if needed without going below 0", function() {
+                    itemQuality = 3;
+                    const testItem = new Item(itemName, itemSellIn, itemQuality);
+                    const gildedRose = new GildedRose([testItem]);
+                    
+                    gildedRose.decreaseQualityWithLimit(testItem, 2)
+
+                    expect(gildedRose.items[0].quality).to.equal(0);
+                });
+
+                it("does not decrease the quality if it would go below 0", function() {
+                    itemQuality = 0;
+                    const testItem = new Item(itemName, itemSellIn, itemQuality);
+                    const gildedRose = new GildedRose([testItem]);
+                    
+                    gildedRose.decreaseQualityWithLimit(testItem, 1)
+
+                    expect(gildedRose.items[0].quality).to.equal(0);
+                });
             });
         });
 

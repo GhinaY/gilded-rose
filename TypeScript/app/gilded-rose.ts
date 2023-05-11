@@ -13,6 +13,7 @@ export class Item {
 export class GildedRose {
     items: Array<Item>;
     legendaryItemTypes: Array<string> = ['Sulfuras, Hand of Ragnaros'];
+    doubledDegradationRegex = RegExp(/conjured/i); 
 
     constructor(items = [] as Array<Item>) {
         this.items = items;
@@ -23,7 +24,13 @@ export class GildedRose {
     };
 
     decreaseQualityWithLimit(item, amount = 1) {
-        item.quality = Math.max(0, item.quality - amount);
+        // the conjured check is done here as the requirements did not exclude the possibility of special case items also being conjured
+        // this separates the logic of figuring out the normal amount and the logic for the conjured multiplier
+        let doubledAmount;
+        if (this.doubledDegradationRegex.test(item.name)) {
+            doubledAmount = amount * 2;
+        }
+        item.quality = Math.max(0, item.quality - (doubledAmount || amount));
     };
 
     getSellInDependantQualityChangeAmount(item) {

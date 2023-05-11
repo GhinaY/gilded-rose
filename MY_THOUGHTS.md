@@ -21,3 +21,6 @@ Hard-coding the Sulfuras to be the only exception case where the `sellIn` and `q
 ### Commit 6: Update tests to use variables 
 Small changes to the tests for readability's sake. I found while going through them again that I kept forgetting the order of the `Item` constructor parameters (i.e. confusing `quality` and `sellIn`), so I opted for using named variables instead. I also set default values for those variables in higher-level `beforeEach` statements so they can be reused by tests and reduce the workload when creating new tests. \
 I also found myself having to check the variable numbers again to know what values should be in the `expect` statements, so I opted for replacing hard values with the mathematical operations (e.g. `expect...(itemQuality - 1)` instead of `expect...(9)`).
+
+### Commit 7: Add support for conjured items
+Now that we've done all the refactoring, adding support for conjured items becomes a very simple and quick task. To decouple the conjured logic, I've added it to the function that does the actual quality decrease update. This allows any item type to potentially be conjured without having to add new logic and checks in each `case` statement within the `switch`.
