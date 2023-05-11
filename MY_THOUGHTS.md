@@ -14,3 +14,6 @@ A lot of code was being repeated multiple times, so it made sense to reduce that
 
 ### Commit 4: More helper functions to reduce redundencies
 Instead of incrementally updating the quality by 1 each time, it makes more sense and is easier to read if we determine how much we need to change the value by and make the update once. It also once again means less repetitive code, decoupled concerns, easier testing and easier future changes.
+
+### Commit 5: Creating a list for legendary items
+Hard-coding the Sulfuras to be the only exception case where the `sellIn` and `quality` values are never changed seemed very rigid and not scalable. This is a very small change but with a big impact: now we can very easily add more "legendary" items in the future just by adding them to the array. Makes the code more flexible and extendable. 

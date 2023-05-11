@@ -12,6 +12,7 @@ export class Item {
 
 export class GildedRose {
     items: Array<Item>;
+    legendaryItemTypes: Array<string> = ['Sulfuras, Hand of Ragnaros'];
 
     constructor(items = [] as Array<Item>) {
         this.items = items;
@@ -32,7 +33,7 @@ export class GildedRose {
 
     updateQuality() {
         this.items = this.items.map(item => {
-            if (item.name === 'Sulfuras, Hand of Ragnaros') {
+            if (this.legendaryItemTypes.indexOf(item.name) !== -1) {    // wasn't sure if I could update TS version to support .includes()
                 return item;
             };
 
