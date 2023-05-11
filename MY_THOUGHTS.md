@@ -24,3 +24,6 @@ I also found myself having to check the variable numbers again to know what valu
 
 ### Commit 7: Add support for conjured items
 Now that we've done all the refactoring, adding support for conjured items becomes a very simple and quick task. To decouple the conjured logic, I've added it to the function that does the actual quality decrease update. This allows any item type to potentially be conjured without having to add new logic and checks in each `case` statement within the `switch`.
+
+### Commit 8: Replace hard-coded strings with constants
+This is another extendability-motivated change: strings shouldn't be hard-coded repeatedly because a single typo can break everything. By using variables to store the string values, it makes it easier to extend the code with less risks of typos, etc. Also good practice in case we ever want to add capabilities like internationalisation for example.

@@ -10,9 +10,13 @@ export class Item {
     }
 }
 
+export const BACKSTAGE_PASSES = 'Backstage passes to a TAFKAL80ETC concert';
+export const AGED_BRIE = 'Aged Brie'
+export const SULFURAS = 'Sulfuras, Hand of Ragnaros';
+
 export class GildedRose {
     items: Array<Item>;
-    legendaryItemTypes: Array<string> = ['Sulfuras, Hand of Ragnaros'];
+    legendaryItemTypes: Array<string> = [SULFURAS];
     doubledDegradationRegex = RegExp(/conjured/i); 
 
     constructor(items = [] as Array<Item>) {
@@ -47,7 +51,7 @@ export class GildedRose {
             item.sellIn -= 1;
 
             switch (item.name) {
-                case 'Backstage passes to a TAFKAL80ETC concert':
+                case BACKSTAGE_PASSES:
                     if (item.sellIn < 0) {
                         item.quality = 0;
                     } else {
@@ -65,7 +69,7 @@ export class GildedRose {
                     };
                     
                     break;
-                case 'Aged Brie':
+                case AGED_BRIE:
                     var changeAmount = this.getSellInDependantQualityChangeAmount(item);
                     this.increaseQualityWithLimit(item, changeAmount);
                     break;

@@ -1,14 +1,16 @@
 import { expect } from 'chai';
-import { Item, GildedRose } from '../app/gilded-rose';
+import { Item, GildedRose, AGED_BRIE, SULFURAS, BACKSTAGE_PASSES } from '../app/gilded-rose';
 
 describe('Gilded Rose', function () {
     let itemName: string;
     let itemSellIn: number;
     let itemQuality: number;
 
+    const TEST_ITEM_NAME = "Test item";
+
     describe("Constructor function", function () {
         it("sets the items property correctly if an argument list is provided", function() {
-            const testItems = [ new Item(itemName, 1, 1) ];
+            const testItems = [ new Item(TEST_ITEM_NAME, 1, 1) ];
             const gildedRose = new GildedRose(testItems);
 
             expect(gildedRose.items).to.equal(testItems);
@@ -23,7 +25,7 @@ describe('Gilded Rose', function () {
 
     describe("Helper functions", function () {
         beforeEach(function() {
-            itemName = "Test item";
+            itemName = TEST_ITEM_NAME;
             itemQuality = 10;
             itemSellIn = 10
         });
@@ -213,7 +215,7 @@ describe('Gilded Rose', function () {
 
             describe("Standard item", function () {
                 it("should decrease the sellIn value by 1", function() {
-                    itemName = "Test item";
+                    itemName = TEST_ITEM_NAME;
                     const items = getItems();
 
                     expect(items[0].sellIn).to.equal(itemSellIn - 1);
@@ -222,7 +224,7 @@ describe('Gilded Rose', function () {
 
             describe("Legendary item", function () {
                 it("should not change the sellIn value", function() {
-                    itemName = "Sulfuras, Hand of Ragnaros";
+                    itemName = SULFURAS;
                     const items = getItems();
 
                     expect(items[0].sellIn).to.equal(itemSellIn);
@@ -237,7 +239,7 @@ describe('Gilded Rose', function () {
 
             describe("Standard item", function () {
                 beforeEach(function() {
-                    itemName = "Test item";
+                    itemName = TEST_ITEM_NAME;
                 });
 
                 describe("when sellIn value after update is 0 or more", function () {
@@ -268,7 +270,7 @@ describe('Gilded Rose', function () {
             describe("Special case items", function () {
                 describe("Legendary item", function () {
                     beforeEach(function() {
-                        itemName = "Sulfuras, Hand of Ragnaros";
+                        itemName = SULFURAS;
                         itemSellIn = 10;
                     });
 
@@ -281,7 +283,7 @@ describe('Gilded Rose', function () {
 
                 describe("Aged Brie item", function () {
                     beforeEach(function() {
-                        itemName = "Aged Brie";
+                        itemName = AGED_BRIE;
                     });
 
                     describe("when sellIn value after update is 0 or more", function () {
@@ -311,7 +313,7 @@ describe('Gilded Rose', function () {
 
                 describe("Backstage passes item", function () {
                     beforeEach(function() {
-                        itemName = "Backstage passes to a TAFKAL80ETC concert";
+                        itemName = BACKSTAGE_PASSES;
                     });
 
                     describe("when sellIn value after update is less than 0", function () {
