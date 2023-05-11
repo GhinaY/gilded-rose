@@ -27,3 +27,6 @@ Now that we've done all the refactoring, adding support for conjured items becom
 
 ### Commit 8: Replace hard-coded strings with constants
 This is another extendability-motivated change: strings shouldn't be hard-coded repeatedly because a single typo can break everything. By using variables to store the string values, it makes it easier to extend the code with less risks of typos, etc. Also good practice in case we ever want to add capabilities like internationalisation for example.
+
+### Commit 9: Add support for more backstage passes items
+The requirements say "backstage passes", not only specifically "Backstage passes to a TAFKAL80ETC concert" like the previous code had. This is another small change with a big impact: now Gilded Rose can have backstage passes for different concerts without having to make changes to the code. While it wasn't specifically asked for here, this flexible implementation was more intuitive to me than a single hardcoded item, so I decided to add it in. 

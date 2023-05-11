@@ -199,6 +199,38 @@ describe('Gilded Rose', function () {
                 expect(changeAmount).to.equal(1);
             });
         });
+
+        describe("getItemTypeFromName", function () {
+            it("returns 'Backstage passes' if the string contains the words lower case 'backstage passes'", function() {
+                const testString = "Some backstage passes item name";
+                const testItem = new Item(itemName, itemSellIn, itemQuality);
+                const gildedRose = new GildedRose([testItem]);
+                
+                const itemType = gildedRose.getItemTypeFromName(testString)
+
+                expect(itemType).to.equal(BACKSTAGE_PASSES);
+            });
+
+            it("returns 'Backstage passes' if the string contains the words 'backstage passes' with some capitalisation", function() {
+                const testString = "Some bAcKsTaGe PaSsEs item name";
+                const testItem = new Item(itemName, itemSellIn, itemQuality);
+                const gildedRose = new GildedRose([testItem]);
+                
+                const itemType = gildedRose.getItemTypeFromName(testString)
+
+                expect(itemType).to.equal(BACKSTAGE_PASSES);
+            });
+
+            it("returns the argument string unchanged if it does not contain 'backstage passes'", function() {
+                const testString = "Some other name";
+                const testItem = new Item(itemName, itemSellIn, itemQuality);
+                const gildedRose = new GildedRose([testItem]);
+                
+                const itemType = gildedRose.getItemTypeFromName(testString)
+
+                expect(itemType).to.equal(testString);
+            });
+        });
     });
     
     describe("updateQuality function", function () {

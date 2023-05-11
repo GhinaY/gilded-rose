@@ -10,7 +10,7 @@ export class Item {
     }
 }
 
-export const BACKSTAGE_PASSES = 'Backstage passes to a TAFKAL80ETC concert';
+export const BACKSTAGE_PASSES = 'Backstage passes';
 export const AGED_BRIE = 'Aged Brie'
 export const SULFURAS = 'Sulfuras, Hand of Ragnaros';
 
@@ -18,6 +18,7 @@ export class GildedRose {
     items: Array<Item>;
     legendaryItemTypes: Array<string> = [SULFURAS];
     doubledDegradationRegex = RegExp(/conjured/i); 
+    backstagePassesRegex = RegExp(/backstage passes/i); 
 
     constructor(items = [] as Array<Item>) {
         this.items = items;
@@ -42,6 +43,13 @@ export class GildedRose {
         return 1;
     }
 
+    getItemTypeFromName(itemName) {
+        if (this.backstagePassesRegex.test(itemName)) {
+            return BACKSTAGE_PASSES;
+        }
+        return itemName;
+    }
+
     updateQuality() {
         this.items = this.items.map(item => {
             if (this.legendaryItemTypes.indexOf(item.name) !== -1) {    // wasn't sure if I could update TS version to support .includes()
@@ -50,7 +58,9 @@ export class GildedRose {
 
             item.sellIn -= 1;
 
-            switch (item.name) {
+            const itemType = this.getItemTypeFromName(item.name);
+
+            switch (itemType) {
                 case BACKSTAGE_PASSES:
                     if (item.sellIn < 0) {
                         item.quality = 0;
@@ -67,7 +77,6 @@ export class GildedRose {
 
                         this.increaseQualityWithLimit(item, changeAmount);
                     };
-                    
                     break;
                 case AGED_BRIE:
                     var changeAmount = this.getSellInDependantQualityChangeAmount(item);
